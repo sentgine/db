@@ -1,0 +1,18 @@
+{
+    "name": "sentgine/db",
+    "description": "A lightweight PHP PDO-based query builder for simplified database interactions.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Sentgine\\Db\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sentgine",
+            "email": "sentgine@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
