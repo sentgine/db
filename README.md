@@ -220,6 +220,7 @@ If you discover any security-related issues, please email sentgine@gmail.com ins
 - Check out some cool tutorials and stuff on [YouTube](https://www.youtube.com/@sentgine)!
 - Catch my latest tweets and updates on [Twitter](https://twitter.com/sentgine) (formerly X)!
 - Let's connect on a more professional note over on [LinkedIn](https://www.linkedin.com/in/adrian-navaja/)!
+- Visit my website at [sentgine.com](https://sentgine.com) to learn more about me and my work.
 
 ## License
 The MIT License (MIT). Please see the [LICENSE](https://github.com/sentgine/db/blob/main/LICENSE) file for more information.
