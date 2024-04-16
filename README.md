@@ -216,7 +216,10 @@ Please see the [CHANGELOG](https://github.com/sentgine/db/blob/main/CHANGELOG.md
 If you discover any security-related issues, please email sentgine@gmail.com instead of using the issue tracker.
 
 ## Credits
-Helper is built and maintained by Adrian Navaja. Visit my [YOUTUBE](https://www.youtube.com/@sentgine) channel!
+**DB** is built and maintained by Adrian Navaja.
+- Check out some cool tutorials and stuff on [YouTube](https://www.youtube.com/@sentgine)!
+- Catch my latest tweets and updates on [Twitter](https://twitter.com/sentgine) (formerly X)!
+- Let's connect on a more professional note over on [LinkedIn](https://www.linkedin.com/in/adrian-navaja/)!
 
 ## License
 The MIT License (MIT). Please see the [LICENSE](https://github.com/sentgine/db/blob/main/LICENSE) file for more information.
