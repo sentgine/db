@@ -48,7 +48,7 @@ A standalone database query builder wrapper using PDO.
 You can install the package via Composer by running the following command:
 
 ```bash
-composer require sentgine/db
+composer require sentgine/db:^1.0
 ```
 
 ## Sample Usage of DB
