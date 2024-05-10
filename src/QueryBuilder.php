@@ -261,10 +261,10 @@ class QueryBuilder
      *
      * @param string $table The name of the table.
      * @param array $parameters An associative array where keys are column names and values are the data to be inserted.
-     * @return void
+     * @return int|string The ID of the last inserted row.
      * @throws PDOException If an error occurs while executing the query.
      */
-    public function insert(string $table, array $parameters): void
+    public function insert(string $table, array $parameters): int|string
     {
         $sql = sprintf(
             'INSERT INTO %s (%s) VALUES (%s)',
@@ -277,6 +277,8 @@ class QueryBuilder
             $statement = $this->pdo->prepare($sql);
             $statement->execute($parameters);
             $this->lastQuery = $sql;
+            // Return the last inserted ID
+            return $this->pdo->lastInsertId();
         } catch (PDOException $e) {
             // If an exception occurs, preserve the last executed query
             $this->lastQuery = $sql;
