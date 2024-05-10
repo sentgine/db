@@ -53,7 +53,7 @@ class QueryBuilder
 
         // Check if the default configuration file exists
         if (!file_exists($defaultConfigPath)) {
-            throw new Exception("Default database configuration file not found: {$defaultConfigPath}");
+            return;
         }
 
         // Load the default configuration
