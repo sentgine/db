@@ -481,4 +481,39 @@ class QueryBuilder
 
         return (int) $totalCount;
     }
+
+    /**
+     * Orders the results by one or more specified columns with optional sorting directions.
+     * 
+     * @param array|string $columns The column(s) to order by. Can be either a string for a single column, an array of columns for multiple column sorting, or an associative array where keys are column names and values are the sorting direction ('ASC' or 'DESC').
+     * @param string|null $direction (Optional) The default direction of sorting. Accepts 'ASC' for ascending order or 'DESC' for descending order. Defaults to null.
+     * @return $this
+     */
+    public function orderBy($columns, ?string $direction = null): self
+    {
+        if (is_array($columns)) {
+            // Handle associative array format
+            if (array_values($columns) !== $columns) {
+                $orderByClauses = [];
+                foreach ($columns as $column => $dir) {
+                    $orderByClauses[] = "{$column} {$dir}";
+                }
+                $orderByString = implode(', ', $orderByClauses);
+            } else {
+                // Handle multiple column sorting
+                $orderByString = implode(', ', $columns);
+            }
+        } else {
+            // Handle single column sorting
+            $orderByString = $columns;
+            $direction = $direction ?? 'ASC'; // Default direction if not provided
+        }
+
+        if ($direction !== null) {
+            $orderByString .= " {$direction}";
+        }
+
+        $this->query .= " ORDER BY {$orderByString}";
+        return $this;
+    }
 }
