@@ -31,7 +31,8 @@ WHERE
 	(
 		(  
 		   c.is_active = 1 
-		   c.birthdate BETWEEN 'asdfaf' and 'ASDFASFDF'
+           AND 
+           c.birthdate BETWEEN 'asdfaf' and 'ASDFASFDF'
 		)
 		AND 
 		(

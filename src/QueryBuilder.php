@@ -2,6 +2,7 @@
 
 namespace Sentgine\Db;
 
+use Closure;
 use PDO;
 use Exception;
 use PDOException;
@@ -160,45 +161,71 @@ class QueryBuilder
     /**
      * Adds a WHERE clause to the query.
      *
-     * @param string $field The field to filter on.
-     * @param mixed $value The value to compare against.
-     * @param string $operator (Optional) The comparison operator. Defaults to '='.
-     * @return $this
+     * @param string $field The field name.
+     * @param mixed $value The value to compare.
+     * @param string $operator The comparison operator (default is '=').
+     * @param string|null $expression An optional expression to append.
+     * @param string|Closure|null $subQuery An optional subquery or closure.
+     * @return self
      */
-    public function where(string $field, $value, string $operator = '='): self
+    public function where(string $field, mixed $value, string $operator = '=', string $expression = null, string|Closure $subQuery = null): self
     {
         $value = $this->sanitizeString($value);
-        $this->query .= " WHERE {$field} {$operator} {$value}";
+
+        if (is_null($expression)) {
+            $this->query .= " WHERE {$field} {$operator} {$value}";
+        } elseif (is_callable($subQuery)) {
+        } else {
+            // Put expression logic here
+        }
+
         return $this;
     }
 
     /**
      * Adds an OR WHERE clause to the query.
      *
-     * @param string $field The field to filter on.
-     * @param mixed $value The value to compare against.
-     * @param string $operator (Optional) The comparison operator. Defaults to '='.
-     * @return $this
+     * @param string $field The field name.
+     * @param mixed $value The value to compare.
+     * @param string $operator The comparison operator (default is '=').
+     * @param string|null $expression An optional expression to append.
+     * @param string|Closure|null $subQuery An optional subquery or closure.
+     * @return self
      */
-    public function orWhere(string $field, $value, string $operator = '='): self
+    public function orWhere(string $field, mixed $value, string $operator = '=', string $expression = null, string|Closure $subQuery = null): self
     {
         $value = $this->sanitizeString($value);
-        $this->query .= " OR {$field} {$operator} {$value}";
+        if (is_null($expression)) {
+            $this->query .= " OR {$field} {$operator} {$value}";
+        } elseif (is_callable($subQuery)) {
+        } else {
+            // Put expression logic here
+        }
+
         return $this;
     }
 
     /**
      * Adds an AND WHERE clause to the query.
      *
-     * @param string $field The field to filter on.
-     * @param mixed $value The value to compare against.
-     * @param string $operator (Optional) The comparison operator. Defaults to '='.
-     * @return $this
+     * @param string $field The field name.
+     * @param mixed $value The value to compare.
+     * @param string $operator The comparison operator (default is '=').
+     * @param string|null $expression An optional expression to append.
+     * @param string|Closure|null $subQuery An optional subquery or closure.
+     * @return self
      */
-    public function andWhere(string $field, $value, string $operator = '='): self
+    public function andWhere(string $field, mixed $value, string $operator = '=', string $expression = null, string|Closure $subQuery = null): self
     {
         $value = $this->sanitizeString($value);
-        $this->query .= " AND {$field} {$operator} {$value}";
+
+        if (is_null($expression)) {
+            $this->query .= " AND {$field} {$operator} {$value}";
+        } elseif (is_callable($subQuery)) {
+        } else {
+            // Put expression logic here
+        }
+
         return $this;
     }
 

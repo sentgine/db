@@ -84,3 +84,25 @@ run($db, function () use ($db) {
     echo queryInfo($db->getLastQuery());
     // dump($result);
 });
+
+
+$db->select('users');
+$db->nestWhere("( 
+    (
+       {{nest1}}
+    ) 
+    AND
+    (
+       {{nest2}}
+    )
+    )
+");
+
+$db->where('age', '30.5 string', expression: 'nest1');
+$db->orWhere('age', '30.5 string', expression: 'nest2');
+$db->andWhere('age', '30.5 string', 'expression2');
+
+$db->where(subQuery: function () use ($db) {
+    // put subquery
+    return $db->raw('SELECT 1 FROM dual');
+}, expression: 'expression3');
