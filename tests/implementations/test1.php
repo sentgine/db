@@ -11,6 +11,11 @@ function dump(array|string $data)
     echo '</pre>';
 }
 
+function queryInfo(string $string)
+{
+    echo "<br/><strong>Query</strong>: {$string}";
+}
+
 function run(QueryBuilder $db, Closure $callable)
 {
     try {
@@ -35,7 +40,7 @@ run($db, function () use ($db) {
     $db->where('age', "30");
     // $db->orWhere('name', 'cant "go"');
     $result = $db->get();
-    echo "<br/>Query: {$db->getLastQuery()}";
+    echo queryInfo($db->getLastQuery());
     dump($result);
 });
 
@@ -43,6 +48,6 @@ run($db, function () use ($db) {
     $db->select('users');
     $db->where('name', 30, '<');
     $result = $db->get();
-    echo "<br/>Query: {$db->getLastQuery()}";
+    echo queryInfo($db->getLastQuery());
     dump($result);
 });
