@@ -69,6 +69,26 @@ class QueryBuilder
     }
 
     /**
+     * Sanitize a string by escaping certain characters or converting it to an integer if it contains only numeric characters.
+     *
+     * @param string $input The input string to sanitize.
+     * @return string|int The sanitized string or integer.
+     */
+    private function sanitizeString(string $input)
+    {
+        // Define an array of characters to be replaced with their escaped versions
+        $characters = ["'", '"', "\\", "\x00", "\n", "\r", "\x1a"];
+
+        // Define an array of replacements for the characters
+        $replacements = ["\\'", '\\"', "\\\\", "\\x00", "\\n", "\\r", "\\x1a"];
+
+        // Replace characters with their escaped versions in the input string
+        $sanitizedInput = str_replace($characters, $replacements, $input);
+
+        return $sanitizedInput;
+    }
+
+    /**
      * Establishes a database connection using the provided configuration.
      *
      * @param array $config The database configuration array.
@@ -139,19 +159,10 @@ class QueryBuilder
      */
     public function where(string $field, $value, string $operator = '='): self
     {
-        // Check if the value is a string
-        if (is_string($value)) {
-            // Escape and quote string values
-            $value = $this->pdo->quote($value);
-        } else {
-            // Do not quote numeric values
-            $value = (int) $value;
-        }
-
+        $value = $this->sanitizeString($value);
         $this->query .= " WHERE {$field} {$operator} {$value}";
         return $this;
     }
-
 
     /**
      * Adds an OR WHERE clause to the query.
@@ -163,11 +174,7 @@ class QueryBuilder
      */
     public function orWhere(string $field, $value, string $operator = '='): self
     {
-        if (is_string($value)) {
-            // Escape and quote string values
-            $value = $this->pdo->quote($value);
-        }
-
+        $value = $this->sanitizeString($value);
         $this->query .= " OR {$field} {$operator} {$value}";
         return $this;
     }
@@ -182,11 +189,7 @@ class QueryBuilder
      */
     public function andWhere(string $field, $value, string $operator = '='): self
     {
-        if (is_string($value)) {
-            // Escape and quote string values
-            $value = $this->pdo->quote($value);
-        }
-
+        $value = $this->sanitizeString($value);
         $this->query .= " AND {$field} {$operator} {$value}";
         return $this;
     }
