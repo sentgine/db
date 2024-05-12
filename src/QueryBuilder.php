@@ -76,16 +76,7 @@ class QueryBuilder
      */
     private function sanitizeString(string $input)
     {
-        // Define an array of characters to be replaced with their escaped versions
-        $characters = ["'", '"', "\\", "\x00", "\n", "\r", "\x1a"];
-
-        // Define an array of replacements for the characters
-        $replacements = ["\\'", '\\"', "\\\\", "\\x00", "\\n", "\\r", "\\x1a"];
-
-        // Replace characters with their escaped versions in the input string
-        $sanitizedInput = str_replace($characters, $replacements, $input);
-
-        return $sanitizedInput;
+        return is_numeric($input) ? $input : $this->pdo->quote($input);
     }
 
     /**
