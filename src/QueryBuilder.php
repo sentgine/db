@@ -266,13 +266,23 @@ class QueryBuilder
      * @return array The result set as an array of objects.
      * @throws PDOException If an error occurs while executing the query.
      */
-    public function get() 
+    public function get($format = null) 
     {
         try {
             $statement = $this->pdo->prepare($this->query);
             $statement->execute($this->parameters);
             $this->lastQuery = $this->query;
-            return $statement->fetchAll(PDO::FETCH_CLASS);
+            
+            if(!is_null($format)){
+                if($format == "JSON"){
+                    return json_encode($statement->fetchAll(PDO::FETCH_CLASS));
+                }
+            }
+            else {
+                return $statement->fetchAll(PDO::FETCH_CLASS);
+            }
+            
+            
         } catch (PDOException $e) {
             // If an exception occurs, preserve the last executed query
             $this->lastQuery = $this->query;
