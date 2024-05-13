@@ -581,16 +581,15 @@ class QueryBuilder
      * @param  Nest String expression
      *          allows the developer to apply nesting on WHERE statement
      */
-    public function nestWhereExpression($input)
-    {
+    public function nestWhereExpression($input) {
         if (!empty($input)) { // $input is not empty, do something
-            $input = (string)$input;
-            $this->select_query_arr["nestWhere_expression"] = $input;
-            $this->is_where_nesting = TRUE;
+            if ($this->detectStringNest($input) == true) {
+                $input = (string) $input;
+                $this->select_query_arr["nestWhere_expression"] = $input;
+                $this->is_where_nesting = TRUE;
+            }
         }
     }
-
-
 
     public function rawWhere($input, $conditionWrap = NULL)
     {
@@ -603,4 +602,19 @@ class QueryBuilder
             $this->select_query_arr["raw_where_clause"][] = $input;
         }
     }
+    
+    private function detectStringNest($input) {
+        // Define the regular expression pattern
+        $pattern = "/^(\{\{nest([1-9]|1[0-9]|20)\}\}|AND|OR|[\s\t\n\(\)])*$/";
+
+        // Use preg_match to check if the input matches the pattern
+        if (preg_match($pattern, $input)) {
+            return true;
+            //echo "The string '{$input}' contains only the specified patterns and nested expressions with logical operators.";
+        } else {
+            return false;
+            //echo "The string '{$input}' does not match the pattern.";
+        }
+    }
+
 }
