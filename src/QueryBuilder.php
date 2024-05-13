@@ -667,7 +667,7 @@ class QueryBuilder
                     }
                     if (count($collectConditions)>0) {
                         # Perform the string replace operation
-                        $stringNestWhere = str_replace('{{nest' . $i . '}}', implode(" ",$collectConditions), $stringNestWhere);
+                        $stringNestWhere = str_replace('{{nest' . $i . '}}', "(".implode(" ",$collectConditions).")", $stringNestWhere);
                     }
                 }
             }
