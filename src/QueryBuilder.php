@@ -28,6 +28,9 @@ class QueryBuilder
 
     /** @var array Contains select query information. */
     protected array $select_query_arr;
+    
+    /** @var array nesting flag. */
+    protected array $is_where_nesting = false;
 
     /**
      * DatabaseConnection constructor.
@@ -175,15 +178,15 @@ class QueryBuilder
         $value = $this->sanitizeString($value);
 
         if (is_null($expression)) {
-            $this->query .= " WHERE {$field} {$operator} {$value}";
+            $this->query .= " WHERE {$field} {$operator} {$value} ";
         } elseif (is_callable($subQuery)) {
         } elseif(!is_null($expression)){
-//            
-//            $expression = trim((string)$expression);
-//            // Put expression logic here
-//            $this->select_query_arr["where_clause"][$expression] = 
-//                
-//            
+            
+            $expression = trim((string)$expression);
+            // Put expression logic here
+            $this->select_query_arr["where_clause"][$expression][] = [$expression," {$field} {$operator} {$value} "]; 
+                
+            var_dump($this->select_query_arr["where_clause"]);
         }
 
         return $this;
@@ -578,10 +581,12 @@ class QueryBuilder
      * @param  Nest String expression
      *          allows the developer to apply nesting on WHERE statement
      */
-    public function nestWhere($input): self
+    public function nestWhereExpression($input)
     {
         if (!empty($input)) { // $input is not empty, do something
+            $input = (string)$input;
             $this->select_query_arr["nestWhere_expression"] = $input;
+            $this->is_where_nesting = TRUE;
         }
     }
 
