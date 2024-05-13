@@ -52,6 +52,8 @@ class QueryBuilder
         $this->select_query_arr["raw_group_by_clause"] = array();
         $this->select_query_arr["raw_having_clause"] = array();
         $this->select_query_arr["raw_order_by_clause"] = array();
+        
+        $this->select_query_arr["nestWhere_expression"] = ""; # string only
     }
 
     /**
@@ -175,8 +177,13 @@ class QueryBuilder
         if (is_null($expression)) {
             $this->query .= " WHERE {$field} {$operator} {$value}";
         } elseif (is_callable($subQuery)) {
-        } else {
-            // Put expression logic here
+        } elseif(!is_null($expression)){
+//            
+//            $expression = trim((string)$expression);
+//            // Put expression logic here
+//            $this->select_query_arr["where_clause"][$expression] = 
+//                
+//            
         }
 
         return $this;
@@ -259,7 +266,7 @@ class QueryBuilder
      * @return array The result set as an array of objects.
      * @throws PDOException If an error occurs while executing the query.
      */
-    public function get(): array
+    public function get() 
     {
         try {
             $statement = $this->pdo->prepare($this->query);
@@ -558,116 +565,17 @@ class QueryBuilder
     /**
      * Adds WHERE clause to the query.
      *
-     * @param RAW  or  field
-     * @param operator
-     * @param value
-     * @param array   EXAMPLE: array("0,0,1","OR")
-     *          index 0 is nesting coordinates array matrix
-     *                  example:   0,0,1.....
-     *                       first is index of first level
-     *                       second is index of second level
-     *                       and so on.....
-     *          index 1 is logic:   AND, OR
+     * @param  Nest String expression
+     *          allows the developer to apply nesting on WHERE statement
      */
-    public function nestWhere($p1, $p2 = NULL, $p3 = NULL, $p4 = NULL): self
+    public function nestWhere($input): self
     {
-        if ($p2 !== NULL) { # operator
-            // Check if the value is a string
-            if (is_string($p3)) {
-                // Escape and quote string values
-                switch (trim($p2)) {
-                    case "=":
-                        $p2 = "=";
-                        break;
-                    case ">=":
-                        $p2 = ">=";
-                        break;
-                    case "<=":
-                        $p2 = "<=";
-                        break;
-                    case "!=":
-                        $p2 = "!=";
-                        break;
-                    case "<>":
-                        $p2 = "<>";
-                        break;
-                    case "<":
-                        $p2 = "<";
-                        break;
-                    case ">":
-                        $p2 = ">";
-                        break;
-                    case "LIKE":
-                        $p2 = "LIKE";
-                        break;
-                    case "NOT LIKE":
-                        $p2 = "NOT LIKE";
-                        break;
-                    default:
-                        $p2 = NULL;
-                }
-            }
+        if (!empty($input)) { // $input is not empty, do something
+            $this->select_query_arr["nestWhere_expression"] = $input;
         }
-
-        if ($p3 !== NULL) { # value
-            // Check if the value is a string
-            if (is_string($p3)) {
-                // Escape and quote string values
-                $p3 = $this->sanitizeString($p3);
-            }
-            if (is_numeric($p3)) {
-                // Do not quote numeric values
-                $p3 = (float) $p3;
-            }
-        }
-
-
-        if ($p2 === NULL && $p3 === NULL && $p4 === NULL) { # raw
-            $this->select_query_arr["raw_where_clause"][] = trim($p1);
-        }
-        if ($p2 !== NULL && $p3 !== NULL && $p4 !== NULL) {  # all parameters has input
-            if (is_array($p4)) {
-                $coord = trim((string) $p4[0]);  # coordinates / matrix
-                $coord = str_replace(' ', '', $coord); # no spaces
-                $coord = explode(",", $coord);
-                $logic = trim((string) $p4[1]);  # LOGIC
-                switch (strtoupper($logic)) {
-                    case "AND":
-                        $logic = "AND";
-                        break;
-                    case "OR":
-                        $logic = "OR";
-                        break;
-                    default:
-                        $logic = "";
-                }
-                $segment = array($p1, $p2, $p3, $logic);
-                $this->rectify_coordinates($coord, $segment);
-            }
-        }
-        if ($p2 !== NULL && $p3 !== NULL && $p4 === NULL) {   # segment is NULL
-            $segment = array($p1, $p2, $p3);
-            $this->select_query_arr["where_clause"][] = $segment;
-        }
-
-        return $this;
     }
 
-    private function rectify_coordinates($coord, $segment)
-    {
-        if (count($coord) == 1) {
-            $this->select_query_arr["where_clause"][$coord[0]][] = $segment;
-        }
-        if (count($coord) == 2) {
-            $this->select_query_arr["where_clause"][$coord[0]][$coord[1]][] = $segment;
-        }
-        if (count($coord) == 3) {
-            $this->select_query_arr["where_clause"][$coord[0]][$coord[1]][$coord[3]][] = $segment;
-        }
-        if (count($coord) == 4) {
-            $this->select_query_arr["where_clause"][$coord[0]][$coord[1]][$coord[3]][$coord[4]][] = $segment;
-        }
-    }
+
 
     public function rawWhere($input, $conditionWrap = NULL)
     {
