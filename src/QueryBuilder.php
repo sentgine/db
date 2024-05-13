@@ -143,9 +143,15 @@ class QueryBuilder
     public function select(string $table, $columns = '*'): self
     {
         if (is_array($columns)) {
-            $columns = implode(', ', $columns);
+            $this->select_query_arr["select_clause"] = $columns;
         }
-        $this->query = "SELECT {$columns} FROM {$table}";
+        else{
+            $this->select_query_arr["select_clause"][] = "*";
+            $this->query = "SELECT {$columns} FROM {$table}";
+        }
+
+        $this->select_query_arr["raw_from_clause"][] = $table;
+        
         return $this;
     }
 
@@ -184,9 +190,10 @@ class QueryBuilder
             
             $expression = trim((string)$expression);
             // Put expression logic here
-            $this->select_query_arr["where_clause"][$expression][] = [$expression," {$field} {$operator} {$value} "]; 
-                
-            var_dump($this->select_query_arr["where_clause"]);
+            $this->select_query_arr["where_clause"][$expression][] = array($expression," {$field} {$operator} {$value} "); 
+             
+            echo "<pre>";
+            
         }
 
         return $this;
@@ -208,8 +215,14 @@ class QueryBuilder
         if (is_null($expression)) {
             $this->query .= " OR {$field} {$operator} {$value}";
         } elseif (is_callable($subQuery)) {
-        } else {
+        } elseif(!is_null($expression)){
+            
+            $expression = trim((string)$expression);
             // Put expression logic here
+            $this->select_query_arr["where_clause"][$expression][] = array($expression," OR {$field} {$operator} {$value} "); 
+             
+            echo "<pre>";
+            
         }
 
         return $this;
@@ -232,8 +245,14 @@ class QueryBuilder
         if (is_null($expression)) {
             $this->query .= " AND {$field} {$operator} {$value}";
         } elseif (is_callable($subQuery)) {
-        } else {
+        } elseif(!is_null($expression)){
+            
+            $expression = trim((string)$expression);
             // Put expression logic here
+            $this->select_query_arr["where_clause"][$expression][] = array($expression," AND {$field} {$operator} {$value} "); 
+             
+            echo "<pre>";
+            
         }
 
         return $this;
@@ -615,6 +634,52 @@ class QueryBuilder
             return false;
             //echo "The string '{$input}' does not match the pattern.";
         }
+    }
+    
+    public function buildSQL() {
+        $finalSQL = "";
+        if (count($this->select_query_arr["select_clause"]) > 0) {
+            $finalSQL = "SELECT ";
+            $finalSQL .= implode(" , ",$this->select_query_arr["select_clause"]);
+        }
+
+        if (count($this->select_query_arr["raw_from_clause"]) > 0) {
+            $finalSQL .= " FROM ";
+            $finalSQL .= implode("   ",$this->select_query_arr["raw_from_clause"]);
+        }
+        
+        $stringNestWhere = "";
+        
+        # check nesting
+        if ($this->select_query_arr["nestWhere_expression"] != "") {
+            $stringNestWhere = $this->select_query_arr["nestWhere_expression"];
+            $tWhereArray = $this->select_query_arr["where_clause"];
+            for ($i = 1; $i <= 20; $i++) {
+                if (isset($tWhereArray["nest" . $i])) {
+                    $nestSTring = ""; # reset string
+                    $collectConditions = array();
+                    if (count($tWhereArray["nest" . $i]) > 0) {   # check if there data on that label
+
+                        $collectConditions = array();
+                        foreach ($tWhereArray["nest" . $i] as $eachCondition) {
+                            $collectConditions[] = $eachCondition[1]; # copy the condition
+                        }
+                    }
+                    if (count($collectConditions)>0) {
+                        # Perform the string replace operation
+                        $stringNestWhere = str_replace('{{nest' . $i . '}}', implode(" ",$collectConditions), $stringNestWhere);
+                    }
+                }
+            }
+        }
+        
+        if( $stringNestWhere!=""){
+            $finalSQL = $finalSQL . " WHERE ". $stringNestWhere;
+        }
+
+        echo $finalSQL;
+
+        
     }
 
 }
