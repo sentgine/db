@@ -29,8 +29,8 @@ class QueryBuilder
     /** @var array Contains select query information. */
     protected array $select_query_arr;
     
-    /** @var array nesting flag. */
-    protected array $is_where_nesting = false;
+    /** @var boolean nesting flag. */
+    protected $is_where_nesting = false;
 
     /**
      * DatabaseConnection constructor.
