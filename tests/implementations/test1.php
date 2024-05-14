@@ -2,7 +2,7 @@
 
 use Sentgine\Db\QueryBuilder;
 
-require_once './functions.php';
+require_once __DIR__ . '/functions.php';
 
 $db = new QueryBuilder();
 $db->connect([
@@ -15,6 +15,7 @@ $db->connect([
 run($db, function (QueryBuilder $db) {
     $db->select('users');
     $db->where('age', '30.5 string');
+    $db->get();
     echo queryInfo($db->getLastQuery());
 });
 
@@ -59,6 +60,11 @@ run($db, function (QueryBuilder $db) {
     // dump($result);
 });
 
+run($db, function (QueryBuilder $db) {
+    $db->raw('SELECT * FROM users WHERE age < 30.5');
+    $result = $db->paginate(4, 1);
+    echo queryInfo($db->getLastQuery());
+});
 
 // $db->select('users');
 // $db->nestWhere("( 
