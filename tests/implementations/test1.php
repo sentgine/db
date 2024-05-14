@@ -15,6 +15,7 @@ $db->connect([
 run($db, function (QueryBuilder $db) {
     $db->select('users');
     $db->where('age', '30.5 string');
+    $db->get();
     echo queryInfo($db->getLastQuery());
 });
 

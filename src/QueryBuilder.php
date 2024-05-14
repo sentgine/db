@@ -28,7 +28,7 @@ class QueryBuilder
 
     /** @var array Contains select query information. */
     protected array $select_query_arr;
-    
+
     /** @var boolean nesting flag. */
     protected $is_where_nesting = false;
 
@@ -55,7 +55,7 @@ class QueryBuilder
         $this->select_query_arr["raw_group_by_clause"] = array();
         $this->select_query_arr["raw_having_clause"] = array();
         $this->select_query_arr["raw_order_by_clause"] = array();
-        
+
         $this->select_query_arr["nestWhere_expression"] = ""; # string only
     }
 
@@ -144,14 +144,13 @@ class QueryBuilder
     {
         if (is_array($columns)) {
             $this->select_query_arr["select_clause"] = $columns;
-        }
-        else{
+        } else {
             $this->select_query_arr["select_clause"][] = "*";
             $this->query = "SELECT {$columns} FROM {$table}";
         }
 
         $this->select_query_arr["raw_from_clause"][] = $table;
-        
+
         return $this;
     }
 
@@ -186,14 +185,13 @@ class QueryBuilder
         if (is_null($expression)) {
             $this->query .= " WHERE {$field} {$operator} {$value} ";
         } elseif (is_callable($subQuery)) {
-        } elseif(!is_null($expression)){
-            
+        } elseif (!is_null($expression)) {
+
             $expression = trim((string)$expression);
             // Put expression logic here
-            $this->select_query_arr["where_clause"][$expression][] = array($expression," {$field} {$operator} {$value} "); 
-             
+            $this->select_query_arr["where_clause"][$expression][] = array($expression, " {$field} {$operator} {$value} ");
+
             echo "<pre>";
-            
         }
 
         return $this;
@@ -215,14 +213,13 @@ class QueryBuilder
         if (is_null($expression)) {
             $this->query .= " OR {$field} {$operator} {$value}";
         } elseif (is_callable($subQuery)) {
-        } elseif(!is_null($expression)){
-            
+        } elseif (!is_null($expression)) {
+
             $expression = trim((string)$expression);
             // Put expression logic here
-            $this->select_query_arr["where_clause"][$expression][] = array($expression," OR {$field} {$operator} {$value} "); 
-             
+            $this->select_query_arr["where_clause"][$expression][] = array($expression, " OR {$field} {$operator} {$value} ");
+
             echo "<pre>";
-            
         }
 
         return $this;
@@ -245,14 +242,13 @@ class QueryBuilder
         if (is_null($expression)) {
             $this->query .= " AND {$field} {$operator} {$value}";
         } elseif (is_callable($subQuery)) {
-        } elseif(!is_null($expression)){
-            
+        } elseif (!is_null($expression)) {
+
             $expression = trim((string)$expression);
             // Put expression logic here
-            $this->select_query_arr["where_clause"][$expression][] = array($expression," AND {$field} {$operator} {$value} "); 
-             
+            $this->select_query_arr["where_clause"][$expression][] = array($expression, " AND {$field} {$operator} {$value} ");
+
             echo "<pre>";
-            
         }
 
         return $this;
@@ -288,23 +284,20 @@ class QueryBuilder
      * @return array The result set as an array of objects.
      * @throws PDOException If an error occurs while executing the query.
      */
-    public function get($format = null) 
+    public function get($format = null)
     {
         try {
             $statement = $this->pdo->prepare($this->query);
             $statement->execute($this->parameters);
             $this->lastQuery = $this->query;
-            
-            if(!is_null($format)){
-                if($format == "JSON"){
+
+            if (!is_null($format)) {
+                if ($format == "JSON") {
                     return json_encode($statement->fetchAll(PDO::FETCH_CLASS));
                 }
-            }
-            else {
+            } else {
                 return $statement->fetchAll(PDO::FETCH_CLASS);
             }
-            
-            
         } catch (PDOException $e) {
             // If an exception occurs, preserve the last executed query
             $this->lastQuery = $this->query;
@@ -489,7 +482,7 @@ class QueryBuilder
      */
     public function getLastQuery(): string
     {
-        return $this->lastQuery;
+        return isset($this->lastQuery) ? $this->lastQuery : 'No query executed yet';
     }
 
     /**
@@ -600,7 +593,8 @@ class QueryBuilder
      * @param  Nest String expression
      *          allows the developer to apply nesting on WHERE statement
      */
-    public function nestWhereExpression($input) {
+    public function nestWhereExpression($input)
+    {
         if (!empty($input)) { // $input is not empty, do something
             if ($this->detectStringNest($input) == true) {
                 $input = (string) $input;
@@ -621,8 +615,9 @@ class QueryBuilder
             $this->select_query_arr["raw_where_clause"][] = $input;
         }
     }
-    
-    private function detectStringNest($input) {
+
+    private function detectStringNest($input)
+    {
         // Define the regular expression pattern
         $pattern = "/^(\{\{nest([1-9]|1[0-9]|20)\}\}|AND|OR|[\s\t\n\(\)])*$/";
 
@@ -635,21 +630,22 @@ class QueryBuilder
             //echo "The string '{$input}' does not match the pattern.";
         }
     }
-    
-    public function buildSQL() {
+
+    public function buildSQL()
+    {
         $finalSQL = "";
         if (count($this->select_query_arr["select_clause"]) > 0) {
             $finalSQL = "SELECT ";
-            $finalSQL .= implode(" , ",$this->select_query_arr["select_clause"]);
+            $finalSQL .= implode(" , ", $this->select_query_arr["select_clause"]);
         }
 
         if (count($this->select_query_arr["raw_from_clause"]) > 0) {
             $finalSQL .= " FROM ";
-            $finalSQL .= implode("   ",$this->select_query_arr["raw_from_clause"]);
+            $finalSQL .= implode("   ", $this->select_query_arr["raw_from_clause"]);
         }
-        
+
         $stringNestWhere = "";
-        
+
         # check nesting
         if ($this->select_query_arr["nestWhere_expression"] != "") {
             $stringNestWhere = $this->select_query_arr["nestWhere_expression"];
@@ -665,21 +661,18 @@ class QueryBuilder
                             $collectConditions[] = $eachCondition[1]; # copy the condition
                         }
                     }
-                    if (count($collectConditions)>0) {
+                    if (count($collectConditions) > 0) {
                         # Perform the string replace operation
-                        $stringNestWhere = str_replace('{{nest' . $i . '}}', "(".implode(" ",$collectConditions).")", $stringNestWhere);
+                        $stringNestWhere = str_replace('{{nest' . $i . '}}', "(" . implode(" ", $collectConditions) . ")", $stringNestWhere);
                     }
                 }
             }
         }
-        
-        if( $stringNestWhere!=""){
-            $finalSQL = $finalSQL . " WHERE ". $stringNestWhere;
+
+        if ($stringNestWhere != "") {
+            $finalSQL = $finalSQL . " WHERE " . $stringNestWhere;
         }
 
         echo $finalSQL;
-
-        
     }
-
 }
