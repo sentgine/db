@@ -148,19 +148,27 @@ $queryBuilder->select('users')
 ### INSERT
 ```php
 // Insert a new user into the 'users' table
-$queryBuilder->insert('users', ['name' => 'John Doe', 'email' => 'john@example.com']);
+$queryBuilder->insert('users', [
+    'name' => 'John Doe', 
+    'email' => 'john@example.com'
+]);
 ```
 
 ### UPDATE
 ```php
 // Update user with id 1
-$queryBuilder->update('users', ['name' => 'Jane Doe'], ['id' => 1]);
+$queryBuilder->update('users', [
+    'name' => 'Jane Doe'], 
+    ['id' => 1]
+);
 ```
 
 ### DELETE
 ```php
 // Delete users with id greater than 10
-$queryBuilder->delete('users', ['id' => [10, 20]], '>');
+$queryBuilder->delete('users', [
+    'id' => [10, 20]
+], '>');
 ```
 
 ### Raw Query
