@@ -61,10 +61,10 @@ run($db, function (QueryBuilder $db) {
 });
 
 run($db, function (QueryBuilder $db) {
-
-    $db->select('users');
+    $db->raw('SELECT * FROM users WHERE age < 30.5');
+    $result = $db->paginate(4, 1);
+    echo queryInfo($db->getLastQuery());
 });
-
 
 // $db->select('users');
 // $db->nestWhere("( 
