@@ -15,10 +15,7 @@ $db->connect([
 run($db, function (QueryBuilder $db) {
     $db->select('users');
     $db->where('age', '30.5 string');
-    // $db->orWhere('name', 'cant "go"');
-    $result = $db->get();
     echo queryInfo($db->getLastQuery());
-    //dump($result);
 });
 
 run($db, function (QueryBuilder $db) {
