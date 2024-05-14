@@ -174,7 +174,7 @@ $queryBuilder->delete('users', [
 ### Raw Query
 ```php
 // Execute a raw SQL query
-$queryBuilder->raw('SELECT * FROM users WHERE id = 1');
+$queryBuilder->raw('SELECT * FROM users WHERE id = 1')->get();
 ```
 
 ### Truncate Table
