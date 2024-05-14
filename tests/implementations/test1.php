@@ -2,30 +2,7 @@
 
 use Sentgine\Db\QueryBuilder;
 
-require_once __DIR__ . '/../../src/QueryBuilder.php';
-
-function dump(array|string $data)
-{
-    echo '<pre>';
-    print_r($data);
-    echo '</pre>';
-}
-
-function queryInfo(string $string)
-{
-    echo "<br/><strong>Query <span style='color: green;'>(Correct)</span></strong>: {$string}";
-}
-
-function run(QueryBuilder $db, Closure $callable)
-{
-    try {
-        $callable();
-    } catch (\Throwable $th) {
-        echo "<br><br/><strong>This SQL has a syntax error:</strong>";
-        echo "<br/>Query (<span style='color:red;'>Error</span>): {$db->getLastQuery()}";
-        echo "<br/>";
-    }
-}
+require_once './functions.php';
 
 $db = new QueryBuilder();
 $db->connect([
@@ -35,7 +12,7 @@ $db->connect([
     'password' => ''
 ]);
 
-run($db, function () use ($db) {
+run($db, function (QueryBuilder $db) {
     $db->select('users');
     $db->where('age', '30.5 string');
     // $db->orWhere('name', 'cant "go"');
@@ -44,7 +21,7 @@ run($db, function () use ($db) {
     //dump($result);
 });
 
-run($db, function () use ($db) {
+run($db, function (QueryBuilder $db) {
     $db->select('users');
     $db->where('age', 30.5);
     // $db->orWhere('name', 'cant "go"');
@@ -53,7 +30,7 @@ run($db, function () use ($db) {
     //dump($result);
 });
 
-run($db, function () use ($db) {
+run($db, function (QueryBuilder $db) {
 
     $db->select('users');
     $db->where('age', "30");
@@ -63,7 +40,7 @@ run($db, function () use ($db) {
     //dump($result);
 });
 
-run($db, function () use ($db) {
+run($db, function (QueryBuilder $db) {
     $name = <<<EOD
         Can't go
     EOD;
@@ -74,7 +51,7 @@ run($db, function () use ($db) {
     // dump($result);
 });
 
-run($db, function () use ($db) {
+run($db, function (QueryBuilder $db) {
     $name = <<<EOD
         can't "go"
     EOD;
@@ -86,23 +63,23 @@ run($db, function () use ($db) {
 });
 
 
-$db->select('users');
-$db->nestWhere("( 
-    (
-       {{nest1}}
-    ) 
-    AND
-    (
-       {{nest2}}
-    )
-    )
-");
+// $db->select('users');
+// $db->nestWhere("( 
+//     (
+//        {{nest1}}
+//     ) 
+//     AND
+//     (
+//        {{nest2}}
+//     )
+//     )
+// ");
 
-$db->where('age', '30.5 string', expression: 'nest1');
-$db->orWhere('age', '30.5 string', expression: 'nest2');
-$db->andWhere('age', '30.5 string', 'expression2');
+// $db->where('age', '30.5 string', expression: 'nest1');
+// $db->orWhere('age', '30.5 string', expression: 'nest2');
+// $db->andWhere('age', '30.5 string', 'expression2');
 
-$db->where(subQuery: function () use ($db) {
-    // put subquery
-    return $db->raw('SELECT 1 FROM dual');
-}, expression: 'expression3');
+// $db->where(subQuery: function () use ($db) {
+//     // put subquery
+//     return $db->raw('SELECT 1 FROM dual');
+// }, expression: 'expression3');
