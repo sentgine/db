@@ -188,6 +188,9 @@ $perPage = 10;
 // Get the current page number from the request, default to 1 if not provided
 $current_page = $_GET['page'] ?? 1;
 
+// Perform select statement
+$queryBuilder->select('users');
+
 // Paginate the query results
 $paginationData = $queryBuilder->paginate($perPage, $current_page);
 
@@ -216,11 +219,12 @@ Please see the [CHANGELOG](https://github.com/sentgine/db/blob/main/CHANGELOG.md
 If you discover any security-related issues, please email sentgine@gmail.com instead of using the issue tracker.
 
 ## Credits
-**DB** is built and maintained by Adrian Navaja. Special gratitude to the esteemed Database Specialist Consultant, Dodie Batoctoy. Connect with Dodie on ([LinkedIn](https://www.linkedin.com/in/dodie-batoctoy-56833865/)) for expert insights.
+**DB** is built and maintained by Adrian Navaja. 
 - Check out some cool tutorials and stuff on [YouTube](https://www.youtube.com/@sentgine)!
 - Catch my latest tweets and updates on [Twitter](https://twitter.com/sentgine) (formerly X)!
 - Let's connect on a more professional note over on [LinkedIn](https://www.linkedin.com/in/adrian-navaja/)!
 - For more information about me and my work, visit my website: [sentgine.com](https://www.sentgine.com/).
+- A special acknowledgment goes to Dodie Batoctoy, the esteemed Database Specialist Consultant, for significantly enhancing the capabilities of the query builder to support complex edge cases. Dodie's expertise has been invaluable to this project.For more expert insights, connect with Dodie Batoctoy on ([LinkedIn](https://www.linkedin.com/in/dodie-batoctoy-56833865/)).
 
 ## License
 The MIT License (MIT). Please see the [LICENSE](https://github.com/sentgine/db/blob/main/LICENSE) file for more information.
