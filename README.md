@@ -198,6 +198,7 @@ $current_page = $_GET['page'] ?? 1;
 
 // Perform select statement
 $queryBuilder->select('users');
+$queryBuilder->where('age', 30, '>')
 
 // Paginate the query results
 $paginationData = $queryBuilder->paginate($perPage, $current_page);
