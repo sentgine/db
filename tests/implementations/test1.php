@@ -2,7 +2,7 @@
 
 use Sentgine\Db\QueryBuilder;
 
-require_once './functions.php';
+require_once __DIR__ . '/functions.php';
 
 $db = new QueryBuilder();
 $db->connect([
@@ -58,6 +58,11 @@ run($db, function (QueryBuilder $db) {
     $result = $db->get();
     echo queryInfo($db->getLastQuery());
     // dump($result);
+});
+
+run($db, function (QueryBuilder $db) {
+
+    $db->select('users');
 });
 
 
