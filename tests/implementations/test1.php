@@ -2,7 +2,7 @@
 
 use Sentgine\Db\QueryBuilder;
 
-require_once './functions.php';
+require_once __DIR__ . '/functions.php';
 
 $db = new QueryBuilder();
 $db->connect([
