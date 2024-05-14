@@ -406,7 +406,7 @@ class QueryBuilder
      */
     public function getLastQuery(): string
     {
-        return $this->lastQuery;
+        return isset($this->lastQuery) ? $this->lastQuery : 'No query executed yet';
     }
 
     /**
