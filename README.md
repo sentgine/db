@@ -157,8 +157,8 @@ $queryBuilder->insert('users', [
 ### UPDATE
 ```php
 // Update user with id 1
-$queryBuilder->update('users', [
-    'name' => 'Jane Doe'], 
+$queryBuilder->update('users', 
+    ['name' => 'Jane Doe'], 
     ['id' => 1]
 );
 ```
