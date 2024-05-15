@@ -4,3 +4,4 @@ tests/temp
 nbproject
 .vscode
 TodoList
+/nbproject/private/
