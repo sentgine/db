@@ -626,7 +626,7 @@ class QueryBuilder
      */
     public function groupBy($columns): self
     {
-        $orderByString =""; # initial string
+        $groupByString =""; # initial string
         if (is_array($columns)) {
             // Handle associative array format
             if (array_values($columns) !== $columns) {
@@ -634,19 +634,19 @@ class QueryBuilder
                 foreach ($columns as $eachcol) {
                     $groupBystatements[] = " {$eachcol} ";
                 }
-                $orderByString = implode(', ', $groupBystatements);
+                $groupByString = implode(', ', $groupBystatements);
             } else {
                 // Handle multiple column sorting
-                $orderByString = implode(', ', $columns);
+                $groupByString = implode(', ', $columns);
                 $this->select_query_arr["group_by_clause"] = $columns;
             }
         } else {
             // Handle single column sorting
-            $orderByString = $columns;
+            $groupByString = $columns;
             $this->select_query_arr["group_by_clause"][] = $columns;
         }
 
-        $this->query .= " GROUP BY {$orderByString}";
+        $this->query .= " GROUP BY {$groupByString}";
         return $this;
     }
 
