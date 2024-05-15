@@ -229,8 +229,8 @@ The SQL builder provided is intended solely for constructing SQL queries and ens
 ### Complex Nesting on WHERE CLAUSE (logic driven search)
 Utilize nesting in the WHERE clause as expression, particularly for strict conditions and business logic decisions. Nesting expressions can be applied at any desired level, but excessive nesting may lead to complications. Note that keywords **{{nest1}}** through **{{nest20}}** are reserved. No other keywords or characters are allowed to nest in the nestWhereExpression method. This ensures that unwanted syntax is not welcomed in this area.
 ```php
-$queryBuilder->select('targetTable1', array("*"));
-$queryBuilder->nestWhereExpression(' 
+$db->select('targetTable1', array("*"));
+$db->nestWhereExpression(' 
     ( 
         {{nest1}}    
         OR
