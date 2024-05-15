@@ -24,7 +24,7 @@ class QueryBuilder
     protected array $parameters = [];
 
     /** @var string The last executed query. */
-    protected string $lastQuery = "";
+    protected string $last_query = "";
 
     /** @var array Contains select query information. */
     protected array $select_query_arr = [];
@@ -289,7 +289,7 @@ class QueryBuilder
         try {
             $statement = $this->pdo->prepare($this->query);
             $statement->execute($this->parameters);
-            $this->lastQuery = $this->query;
+            $this->last_query = $this->query;
 
             if (!is_null($format)) {
                 if ($format == "JSON") {
@@ -300,7 +300,7 @@ class QueryBuilder
             }
         } catch (PDOException $e) {
             // If an exception occurs, preserve the last executed query
-            $this->lastQuery = $this->query;
+            $this->last_query = $this->query;
             throw $e;
         }
 
@@ -330,11 +330,11 @@ class QueryBuilder
         try {
             $statement = $this->pdo->prepare($this->query);
             $statement->execute();
-            $this->lastQuery = $this->query;
+            $this->last_query = $this->query;
             return $statement->fetchAll(PDO::FETCH_CLASS);
         } catch (PDOException $e) {
             // If an exception occurs, preserve the last executed query
-            $this->lastQuery = $this->query;
+            $this->last_query = $this->query;
             throw $e;
         }
     }
@@ -359,12 +359,12 @@ class QueryBuilder
         try {
             $statement = $this->pdo->prepare($sql);
             $statement->execute($parameters);
-            $this->lastQuery = $sql;
+            $this->last_query = $sql;
             // Return the last inserted ID
             return $this->pdo->lastInsertId();
         } catch (PDOException $e) {
             // If an exception occurs, preserve the last executed query
-            $this->lastQuery = $sql;
+            $this->last_query = $sql;
             throw $e;
         }
     }
@@ -415,10 +415,10 @@ class QueryBuilder
         try {
             $statement = $this->pdo->prepare($sql);
             $statement->execute(array_merge($parameters, $conditions));
-            $this->lastQuery = $sql;
+            $this->last_query = $sql;
         } catch (PDOException $e) {
             // If an exception occurs, preserve the last executed query
-            $this->lastQuery = $sql;
+            $this->last_query = $sql;
             throw $e;
         }
     }
@@ -458,10 +458,10 @@ class QueryBuilder
         try {
             $statement = $this->pdo->prepare($sql);
             $statement->execute($this->parameters);
-            $this->lastQuery = $sql;
+            $this->last_query = $sql;
         } catch (PDOException $e) {
             // If an exception occurs, preserve the last executed query
-            $this->lastQuery = $sql;
+            $this->last_query = $sql;
             throw $e;
         }
     }
@@ -480,10 +480,10 @@ class QueryBuilder
         try {
             $statement = $this->pdo->prepare($sql);
             $statement->execute();
-            $this->lastQuery = $sql;
+            $this->last_query = $sql;
         } catch (PDOException $e) {
             // If an exception occurs, preserve the last executed query
-            $this->lastQuery = $sql;
+            $this->last_query = $sql;
             throw $e;
         }
     }
@@ -495,7 +495,7 @@ class QueryBuilder
      */
     public function getLastQuery(): string
     {
-        return isset($this->lastQuery) ? $this->lastQuery : 'No query executed yet';
+        return isset($this->last_query) ? $this->last_query : 'No query executed yet';
     }
 
     /**
@@ -521,7 +521,7 @@ class QueryBuilder
         $records = $this->limit($perPage)->offset($offset);
 
         // Set the lastQuery
-        $this->lastQuery = $records->getLastQuery();
+        $this->last_query = $records->getLastQuery();
 
         // Execute the modified query
         $results = $records->execute();
