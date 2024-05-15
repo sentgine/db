@@ -284,10 +284,9 @@ class QueryBuilder
     }
 
     /**
-     * Executes the built query and returns the result set.
+     * Retrieves the results of the executed query.
      *
-     * @return array The result set as an array of objects.
-     * @throws PDOException If an error occurs while executing the query.
+     * @return array The query results.
      */
     public function get($format = null) 
     {
@@ -311,25 +310,38 @@ class QueryBuilder
             $this->lastQuery = $this->query;
             throw $e;
         }
+
+        return $this->execute();
     }
 
     /**
-     * Executes a raw SQL query.
+     * Sets a raw SQL query.
      *
-     * @param string $sql The raw SQL query to execute.
-     * @return array The result set as an array of objects.
-     * @throws PDOException If an error occurs while executing the query.
+     * @param string $sql The raw SQL query string.
+     * @return self
      */
-    public function raw(string $sql): array
+    public function raw(string $sql): self
+    {
+        $this->query = $sql;
+        return $this;
+    }
+
+    /**
+     * Executes the current query and returns the results.
+     *
+     * @return string|array The result of the executed query.
+     * @throws PDOException If there is an error executing the query.
+     */
+    public function execute(): string|array
     {
         try {
-            $statement = $this->pdo->prepare($sql);
+            $statement = $this->pdo->prepare($this->query);
             $statement->execute();
-            $this->lastQuery = $sql;
+            $this->lastQuery = $this->query;
             return $statement->fetchAll(PDO::FETCH_CLASS);
         } catch (PDOException $e) {
             // If an exception occurs, preserve the last executed query
-            $this->lastQuery = $sql;
+            $this->lastQuery = $this->query;
             throw $e;
         }
     }
@@ -490,7 +502,7 @@ class QueryBuilder
      */
     public function getLastQuery(): string
     {
-        return $this->lastQuery;
+        return isset($this->lastQuery) ? $this->lastQuery : 'No query executed yet';
     }
 
     /**
@@ -513,10 +525,13 @@ class QueryBuilder
         $totalItems = $paginator->countTotalItems();
 
         // Apply LIMIT and OFFSET for pagination
-        $paginator->limit($perPage)->offset($offset);
+        $records = $this->limit($perPage)->offset($offset);
+
+        // Set the lastQuery
+        $this->lastQuery = $records->getLastQuery();
 
         // Execute the modified query
-        $results = $paginator->get();
+        $results = $records->execute();
 
         // Calculate total pages
         $totalPages = ceil($totalItems / $perPage);

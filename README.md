@@ -148,25 +148,33 @@ $queryBuilder->select('users')
 ### INSERT
 ```php
 // Insert a new user into the 'users' table
-$queryBuilder->insert('users', ['name' => 'John Doe', 'email' => 'john@example.com']);
+$queryBuilder->insert('users', [
+    'name' => 'John Doe', 
+    'email' => 'john@example.com'
+]);
 ```
 
 ### UPDATE
 ```php
 // Update user with id 1
-$queryBuilder->update('users', ['name' => 'Jane Doe'], ['id' => 1]);
+$queryBuilder->update('users', 
+    ['name' => 'Jane Doe'], 
+    ['id' => 1]
+);
 ```
 
 ### DELETE
 ```php
 // Delete users with id greater than 10
-$queryBuilder->delete('users', ['id' => [10, 20]], '>');
+$queryBuilder->delete('users', [
+    'id' => [10, 20]
+], '>');
 ```
 
 ### Raw Query
 ```php
 // Execute a raw SQL query
-$queryBuilder->raw('SELECT * FROM users WHERE id = 1');
+$queryBuilder->raw('SELECT * FROM users WHERE id = 1')->get();
 ```
 
 ### Truncate Table
@@ -190,6 +198,8 @@ $current_page = $_GET['page'] ?? 1;
 
 // Perform select statement
 $queryBuilder->select('users');
+$queryBuilder->where('age', 30, '>');
+
 
 // Paginate the query results
 $paginationData = $queryBuilder->paginate($perPage, $current_page);
@@ -224,7 +234,8 @@ If you discover any security-related issues, please email sentgine@gmail.com ins
 - Catch my latest tweets and updates on [Twitter](https://twitter.com/sentgine) (formerly X)!
 - Let's connect on a more professional note over on [LinkedIn](https://www.linkedin.com/in/adrian-navaja/)!
 - For more information about me and my work, visit my website: [sentgine.com](https://www.sentgine.com/).
-- A special acknowledgment goes to Dodie Batoctoy, the esteemed Database Specialist Consultant, for significantly enhancing the capabilities of the query builder to support complex edge cases. Dodie's expertise has been invaluable to this project.For more expert insights, connect with Dodie Batoctoy on ([LinkedIn](https://www.linkedin.com/in/dodie-batoctoy-56833865/)).
+- A special acknowledgment goes to **Dodie Batoctoy**, the esteemed Database Specialist Consultant, for significantly enhancing the capabilities of the query builder to support complex edge cases. Dodie's expertise has been invaluable to this project. For more expert insights, connect with him on ([LinkedIn](https://www.linkedin.com/in/dodie-batoctoy-56833865/)).
+
 
 ## License
 The MIT License (MIT). Please see the [LICENSE](https://github.com/sentgine/db/blob/main/LICENSE) file for more information.

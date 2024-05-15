@@ -61,6 +61,13 @@ run($db, function (QueryBuilder $db) {
 });
 
 
+run($db, function (QueryBuilder $db) {
+    $db->raw('SELECT * FROM users WHERE age < 30.5');
+    $result = $db->paginate(4, 1);
+    echo queryInfo($db->getLastQuery());
+});
+
+
 // $db->select('users');
 // $db->nestWhere("( 
 //     (
@@ -81,3 +88,4 @@ run($db, function (QueryBuilder $db) {
 //     // put subquery
 //     return $db->raw('SELECT 1 FROM dual');
 // }, expression: 'expression3');
+
