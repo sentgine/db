@@ -230,8 +230,6 @@ class QueryBuilder
             $expression = trim((string)$expression);
             // Put expression logic here
             $this->select_query_arr["where_clause"][$expression][] = array($expression, " OR {$field} {$operator} {$value} ");
-
-            echo "<pre>";
         }
 
         return $this;
@@ -260,8 +258,6 @@ class QueryBuilder
             $expression = trim((string)$expression);
             // Put expression logic here
             $this->select_query_arr["where_clause"][$expression][] = array($expression, " AND {$field} {$operator} {$value} ");
-
-            echo "<pre>";
         }
 
         return $this;
