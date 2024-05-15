@@ -2,30 +2,7 @@
 
 use Sentgine\Db\QueryBuilder;
 
-require_once __DIR__ . '/../../src/QueryBuilder.php';
-
-function dump(array|string $data)
-{
-    echo '<pre>';
-    print_r($data);
-    echo '</pre>';
-}
-
-function queryInfo(string $string)
-{
-    echo "<br/><strong>Query <span style='color: green;'>(Correct)</span></strong>: {$string}";
-}
-
-function run(QueryBuilder $db, Closure $callable)
-{
-    try {
-        $callable();
-    } catch (\Throwable $th) {
-        echo "<br><br/><strong>This SQL has a syntax error:</strong>";
-        echo "<br/>Query (<span style='color:red;'>Error</span>): {$db->getLastQuery()}";
-        echo "<br/>";
-    }
-}
+require_once __DIR__ . '/functions.php';
 
 $db = new QueryBuilder();
 $db->connect([
@@ -64,10 +41,7 @@ $db->connect([
 
 
 
-$db->select('dual', array("1 as col1","\"col2\""));
+$db->select('dual', array("1 as col1", "\"col2\""));
 $db->groupBy("col1");
 $db->groupBy("col2");
 echo $db->buildSQL();
-
-
-
