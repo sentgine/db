@@ -154,7 +154,6 @@ class QueryBuilder
         return $this;
     }
 
-
     /**
      * FROM clause.
      * 
