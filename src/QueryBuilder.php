@@ -670,9 +670,9 @@ class QueryBuilder
     /**
      * Builds and outputs the SQL query based on the provided query array.
      *
-     * @return void
+     * @return string
      */
-    public function buildSQL(): void
+    public function buildSQL(): string
     {
         $finalSQL = "";
 
@@ -761,6 +761,6 @@ class QueryBuilder
             $finalWhere = " WHERE   (" . implode(" AND ", $finalWhereArray)   . ") ";
         }
 
-        echo $finalSQL  . $finalWhere;
+        return (string) $finalSQL  . $finalWhere;
     }
 }
