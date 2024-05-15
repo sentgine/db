@@ -67,6 +67,14 @@ run($db, function (QueryBuilder $db) {
     echo queryInfo($db->getLastQuery());
 });
 
+run($db, function (QueryBuilder $db) {
+    $db->insert('users', [
+        'name' => 'test',
+        'age' => 56,
+    ]);
+    echo queryInfo($db->getLastQuery());
+});
+
 
 // $db->select('users');
 // $db->nestWhere("( 
@@ -88,4 +96,3 @@ run($db, function (QueryBuilder $db) {
 //     // put subquery
 //     return $db->raw('SELECT 1 FROM dual');
 // }, expression: 'expression3');
-

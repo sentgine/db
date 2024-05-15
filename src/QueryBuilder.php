@@ -354,22 +354,31 @@ class QueryBuilder
      */
     public function insert(string $table, array $parameters): int|string
     {
-        $sql = sprintf(
-            'INSERT INTO %s (%s) VALUES (%s)',
-            $table,
-            implode(', ', array_keys($parameters)),
-            ':' . implode(', :', array_keys($parameters))
-        );
+        $columns = implode(', ', array_keys($parameters));
+        $placeholders = ':' . implode(', :', array_keys($parameters));
+
+        $sql = 'INSERT INTO ' . $table . ' (' . $columns . ') VALUES (' . $placeholders . ')';
 
         try {
             $statement = $this->pdo->prepare($sql);
-            $statement->execute($parameters);
-            $this->last_query = $sql;
+
+            // Bind parameters and create a log version of the query
+            $logSql = $sql;
+            foreach ($parameters as $column => $value) {
+                $statement->bindValue(':' . $column, $value);
+                // Escape the value for the log (assuming PDO::quote() or similar escaping function)
+                $escapedValue = $this->sanitizeString($value);
+                $logSql = str_replace(':' . $column, $escapedValue, $logSql);
+            }
+
+            $statement->execute();
+            $this->last_query = $logSql;
+
             // Return the last inserted ID
             return $this->pdo->lastInsertId();
         } catch (PDOException $e) {
             // If an exception occurs, preserve the last executed query
-            $this->last_query = $sql;
+            $this->last_query = $logSql;
             throw $e;
         }
     }
