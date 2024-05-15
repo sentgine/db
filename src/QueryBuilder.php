@@ -604,7 +604,7 @@ class QueryBuilder
     }
 
     /**
-     * Adds a nested WHERE clause to the query.Nest String expression allows the developer to apply nesting on WHERE statement.
+     * Adds a nested WHERE clause to the query. Nest String expression allows the developer to apply nesting on WHERE statement.
      *
      * @param mixed $input The input expression to be nested in the WHERE clause.
      * @return $this
@@ -761,6 +761,9 @@ class QueryBuilder
             $finalWhere = " WHERE   (" . implode(" AND ", $finalWhereArray)   . ") ";
         }
 
-        return (string) $finalSQL  . $finalWhere;
+        $output = (string) $finalSQL  . $finalWhere;
+        $this->last_query = $output;
+
+        return $output;
     }
 }
