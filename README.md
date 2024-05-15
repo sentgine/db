@@ -200,6 +200,7 @@ $current_page = $_GET['page'] ?? 1;
 $queryBuilder->select('users');
 $queryBuilder->where('age', 30, '>');
 
+
 // Paginate the query results
 $paginationData = $queryBuilder->paginate($perPage, $current_page);
 
@@ -234,6 +235,7 @@ If you discover any security-related issues, please email sentgine@gmail.com ins
 - Let's connect on a more professional note over on [LinkedIn](https://www.linkedin.com/in/adrian-navaja/)!
 - For more information about me and my work, visit my website: [sentgine.com](https://www.sentgine.com/).
 - A special acknowledgment goes to **Dodie Batoctoy**, the esteemed Database Specialist Consultant, for significantly enhancing the capabilities of the query builder to support complex edge cases. Dodie's expertise has been invaluable to this project. For more expert insights, connect with him on ([LinkedIn](https://www.linkedin.com/in/dodie-batoctoy-56833865/)).
+
 
 ## License
 The MIT License (MIT). Please see the [LICENSE](https://github.com/sentgine/db/blob/main/LICENSE) file for more information.
