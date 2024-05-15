@@ -153,8 +153,8 @@ class QueryBuilder
 
         return $this;
     }
-    
-    
+
+
     /**
      * FROM clause.
      * 
@@ -616,8 +616,7 @@ class QueryBuilder
         $this->query .= " ORDER BY {$orderByString}";
         return $this;
     }
-    
-    
+
     /**
      * Orders the results by one or more specified columns with optional sorting directions.
      * 
@@ -802,28 +801,28 @@ class QueryBuilder
         if ($stringRawWhereClause != "") {
             $finalWhereArray[] = $stringRawWhereClause;
         }
-        
+
         // Build the final WHERE clause
         if (count($finalWhereArray) > 0) {
             $finalWhere = " WHERE   (" . implode(" AND ", $finalWhereArray)   . ") ";
         }
 
-        
+
         # -----------------------------------
-        
+
         $finalGroupBy = " ";
         $finalGroupByArray = [];
         $tGroupArray = $this->select_query_arr["group_by_clause"];
         if (count($tGroupArray) > 0) {
             foreach ($tGroupArray as $eachT) {  # scan only  NON-NESTING
-                 $finalGroupByArray[] = $eachT;
+                $finalGroupByArray[] = $eachT;
             }
         }
         // Build the final GROUP BY  clause
         if (count($finalGroupByArray) > 0) {
             $finalGroupBy = " GROUP BY    " . implode(" ,    ", $tGroupArray)   . " ";
         }
-        
-        return (string) $finalSQL  . $finalWhere.  $finalGroupBy;
+
+        return (string) $finalSQL  . $finalWhere .  $finalGroupBy;
     }
 }
