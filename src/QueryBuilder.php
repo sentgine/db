@@ -310,8 +310,6 @@ class QueryBuilder
             $this->last_query = $this->query;
             throw $e;
         }
-
-        return $this->execute();
     }
 
     /**
