@@ -820,9 +820,24 @@ class QueryBuilder
         }
         // Build the final GROUP BY  clause
         if (count($finalGroupByArray) > 0) {
-            $finalGroupBy = " GROUP BY    " . implode(" ,    ", $tGroupArray)   . " ";
+            $finalGroupBy = " GROUP BY    " . implode(" ,", $finalGroupByArray)   . " ";
+        }
+        
+        # -----------------------------------
+
+        $finalOrderBy = " ";
+        $finalOrderByArray = [];
+        $tOrderArray = $this->select_query_arr["order_by_clause"];
+        if (count($tOrderArray) > 0) {
+            foreach ($tOrderArray as $eachT) {  # scan only  NON-NESTING
+                $finalOrderByArray[] = $eachT;
+            }
+        }
+        // Build the final GROUP BY  clause
+        if (count($finalOrderByArray) > 0) {
+            $finalOrderBy = " ORDER BY    " . implode(" ,", $finalOrderByArray)   . " ";
         }
 
-        return (string) $finalSQL  . $finalWhere .  $finalGroupBy;
+        return (string) $finalSQL  . $finalWhere .  $finalGroupBy. $finalOrderBy;
     }
 }

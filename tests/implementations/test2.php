@@ -44,4 +44,6 @@ $db->connect([
 $db->select('dual', array("1 as col1", "\"col2\""));
 $db->groupBy("col1");
 $db->groupBy("col2");
+$db->orderBy("col2","asc");
+$db->orderBy("col1","desc");
 echo $db->buildSQL();
