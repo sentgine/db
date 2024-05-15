@@ -241,13 +241,13 @@ $queryBuilder->nestWhereExpression('
 ');
 
 $db->where('target_colum1', 235,"=", expression: 'nest1');
-$db->orWhere('target_colum1', 543,"=", expression: 'nest1');
-$db->orWhere('target_colum1', 111,"=", expression: 'nest1');
+$db->orWhere('target_colum1', 543,"=", expression: 'nest1'); // same area as nest1 with OR operator
+$db->orWhere('target_colum1', 111,"=", expression: 'nest1'); // same area as nest1 with OR operator
 
 $db->where('target_colum1', 111,"=", expression: 'nest2');
 
 $db->where('target_colum1', 111,"=", expression: 'nest3');
-$db->andWhere('target_colum1', 111,"=", expression: 'nest3');
+$db->andWhere('target_colum1', 111,"=", expression: 'nest3'); // same area as nest3 with AND operator
 echo $db->buildSQL();
 ```
 
