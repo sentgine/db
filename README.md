@@ -248,7 +248,8 @@ $db->where('target_colum1', 111,"=", expression: 'nest2');
 
 $db->where('target_colum1', 111,"=", expression: 'nest3');
 $db->andWhere('target_colum1', 111,"=", expression: 'nest3'); // same area as nest3 with AND operator
-echo $db->buildSQL();
+$sql = $db->buildSQL();; // Build the SQL query
+$db->raw($sql)->execute(); // Execute the query
 ```
 
 ## Changelog
