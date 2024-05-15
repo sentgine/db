@@ -222,6 +222,35 @@ for ($page = 1; $page <= $pagination['total_pages']; $page++) {
 }
 ```
 
+# Advanced Scenarios
+
+The SQL builder provided is intended solely for constructing SQL queries and ensuring proper formatting. While efforts have been made to mitigate security risks, it should not be solely relied upon as a security feature. Please be aware that complex SQL queries can increase the likelihood of SQL injection vulnerabilities. It is imperative to code thoroughly and conduct thorough reviews before deploying to production environments.
+
+### Complex Nesting on WHERE / Logic driven
+Utilize nesting in the WHERE clause as expression, particularly for strict conditions and business logic decisions. Nesting expressions can be applied at any desired level, but excessive nesting may lead to complications. Note that keywords **{{nest1}}** through **{{nest20}}** are reserved. No other keywords or characters are allowed to nest in the WhereExpression method. This ensures that unwanted syntax is not welcomed in this area.
+```php
+$queryBuilder->select('targetTable1', array("*"));
+$queryBuilder->nestWhereExpression(' 
+    ( 
+        {{nest1}}    
+        OR
+        {{nest2}}    
+    )
+    AND
+    (  {{nest3}}    )
+');
+
+$db->where('target_colum1', 235,"=", expression: 'nest1');
+$db->orWhere('target_colum1', 543,"=", expression: 'nest1');
+$db->orWhere('target_colum1', 111,"=", expression: 'nest1');
+
+$db->where('target_colum1', 111,"=", expression: 'nest2');
+
+$db->where('target_colum1', 111,"=", expression: 'nest3');
+$db->andWhere('target_colum1', 111,"=", expression: 'nest3');
+echo $db->buildSQL();
+```
+
 ## Changelog
 Please see the [CHANGELOG](https://github.com/sentgine/db/blob/main/CHANGELOG.md) file for details on what has changed.
 
