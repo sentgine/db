@@ -153,6 +153,18 @@ class QueryBuilder
 
         return $this;
     }
+    
+    
+    /**
+     * FROM clause.
+     * 
+     * @param string add syntax on FROM clause
+     * $return  VOID
+     */
+    public function from(string $input)
+    {
+        $this->select_query_arr["raw_from_clause"][] = (string)$input;
+    }
 
     /**
      * Adds a join clause to the query.
@@ -593,13 +605,48 @@ class QueryBuilder
             // Handle single column sorting
             $orderByString = $columns;
             $direction = $direction ?? 'ASC'; // Default direction if not provided
+
         }
 
         if ($direction !== null) {
             $orderByString .= " {$direction}";
+            $this->select_query_arr["order_by_clause"][] = $orderByString;
         }
 
         $this->query .= " ORDER BY {$orderByString}";
+        return $this;
+    }
+    
+    
+    /**
+     * Orders the results by one or more specified columns with optional sorting directions.
+     * 
+     * @param array|string $columns The column(s) to order by. Can be either a string for a single column, an array of columns for multiple column sorting, or an associative array where keys are column names and values are the sorting direction ('ASC' or 'DESC').
+     * @return $this
+     */
+    public function groupBy($columns): self
+    {
+        $orderByString =""; # initial string
+        if (is_array($columns)) {
+            // Handle associative array format
+            if (array_values($columns) !== $columns) {
+                $groupBystatements = [];
+                foreach ($columns as $eachcol) {
+                    $groupBystatements[] = " {$eachcol} ";
+                }
+                $orderByString = implode(', ', $groupBystatements);
+            } else {
+                // Handle multiple column sorting
+                $orderByString = implode(', ', $columns);
+                $this->select_query_arr["group_by_clause"] = $columns;
+            }
+        } else {
+            // Handle single column sorting
+            $orderByString = $columns;
+            $this->select_query_arr["group_by_clause"][] = $columns;
+        }
+
+        $this->query .= " GROUP BY {$orderByString}";
         return $this;
     }
 
@@ -755,12 +802,28 @@ class QueryBuilder
         if ($stringRawWhereClause != "") {
             $finalWhereArray[] = $stringRawWhereClause;
         }
-
+        
         // Build the final WHERE clause
         if (count($finalWhereArray) > 0) {
             $finalWhere = " WHERE   (" . implode(" AND ", $finalWhereArray)   . ") ";
         }
 
-        return (string) $finalSQL  . $finalWhere;
+        
+        # -----------------------------------
+        
+        $finalGroupBy = " ";
+        $finalGroupByArray = [];
+        $tGroupArray = $this->select_query_arr["group_by_clause"];
+        if (count($tGroupArray) > 0) {
+            foreach ($tGroupArray as $eachT) {  # scan only  NON-NESTING
+                 $finalGroupByArray[] = $eachT;
+            }
+        }
+        // Build the final GROUP BY  clause
+        if (count($finalGroupByArray) > 0) {
+            $finalGroupBy = " GROUP BY    " . implode(" ,    ", $tGroupArray)   . " ";
+        }
+        
+        return (string) $finalSQL  . $finalWhere.  $finalGroupBy;
     }
 }
