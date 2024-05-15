@@ -154,6 +154,18 @@ class QueryBuilder
         return $this;
     }
 
+
+    /**
+     * FROM clause.
+     * 
+     * @param string add syntax on FROM clause
+     * $return  VOID
+     */
+    public function from(string $input)
+    {
+        $this->select_query_arr["raw_from_clause"][] = (string)$input;
+    }
+
     /**
      * Adds a join clause to the query.
      *
@@ -593,10 +605,12 @@ class QueryBuilder
             // Handle single column sorting
             $orderByString = $columns;
             $direction = $direction ?? 'ASC'; // Default direction if not provided
+
         }
 
         if ($direction !== null) {
             $orderByString .= " {$direction}";
+            $this->select_query_arr["order_by_clause"][] = $orderByString;
         }
 
         $this->query .= " ORDER BY {$orderByString}";
@@ -604,7 +618,39 @@ class QueryBuilder
     }
 
     /**
-     * Adds a nested WHERE clause to the query. Nest String expression allows the developer to apply nesting on WHERE statement.
+     * Orders the results by one or more specified columns with optional sorting directions.
+     * 
+     * @param array|string $columns The column(s) to order by. Can be either a string for a single column, an array of columns for multiple column sorting, or an associative array where keys are column names and values are the sorting direction ('ASC' or 'DESC').
+     * @return $this
+     */
+    public function groupBy($columns): self
+    {
+        $groupByString = ""; # initial string
+        if (is_array($columns)) {
+            // Handle associative array format
+            if (array_values($columns) !== $columns) {
+                $groupBystatements = [];
+                foreach ($columns as $eachcol) {
+                    $groupBystatements[] = " {$eachcol} ";
+                }
+                $groupByString = implode(', ', $groupBystatements);
+            } else {
+                // Handle multiple column sorting
+                $groupByString = implode(', ', $columns);
+                $this->select_query_arr["group_by_clause"] = $columns;
+            }
+        } else {
+            // Handle single column sorting
+            $groupByString = $columns;
+            $this->select_query_arr["group_by_clause"][] = $columns;
+        }
+
+        $this->query .= " GROUP BY {$groupByString}";
+        return $this;
+    }
+
+    /**
+     * Adds a nested WHERE clause to the query.Nest String expression allows the developer to apply nesting on WHERE statement.
      *
      * @param mixed $input The input expression to be nested in the WHERE clause.
      * @return $this
@@ -761,9 +807,37 @@ class QueryBuilder
             $finalWhere = " WHERE   (" . implode(" AND ", $finalWhereArray)   . ") ";
         }
 
-        $output = (string) $finalSQL  . $finalWhere;
-        $this->last_query = $output;
 
-        return $output;
+        # -----------------------------------
+
+        $finalGroupBy = " ";
+        $finalGroupByArray = [];
+        $tGroupArray = $this->select_query_arr["group_by_clause"];
+        if (count($tGroupArray) > 0) {
+            foreach ($tGroupArray as $eachT) {  # scan only  NON-NESTING
+                $finalGroupByArray[] = $eachT;
+            }
+        }
+        // Build the final GROUP BY  clause
+        if (count($finalGroupByArray) > 0) {
+            $finalGroupBy = " GROUP BY    " . implode(" ,", $finalGroupByArray)   . " ";
+        }
+
+        # -----------------------------------
+
+        $finalOrderBy = " ";
+        $finalOrderByArray = [];
+        $tOrderArray = $this->select_query_arr["order_by_clause"];
+        if (count($tOrderArray) > 0) {
+            foreach ($tOrderArray as $eachT) {  # scan only  NON-NESTING
+                $finalOrderByArray[] = $eachT;
+            }
+        }
+        // Build the final GROUP BY  clause
+        if (count($finalOrderByArray) > 0) {
+            $finalOrderBy = " ORDER BY    " . implode(" ,", $finalOrderByArray)   . " ";
+        }
+
+        return (string) $finalSQL  . $finalWhere .  $finalGroupBy . $finalOrderBy;
     }
 }
