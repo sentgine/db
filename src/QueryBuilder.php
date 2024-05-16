@@ -61,6 +61,31 @@ class QueryBuilder
 
         $this->select_query_arr["nestWhere_expression"] = ""; # string only
     }
+    
+    public function purge(){
+        $this->query = "";
+        $this->parameters = [];
+        $this->last_query = "";
+        $this->select_query_arr = [];
+        $this->is_where_nesting = false;
+        $this->table = "";
+        
+        $this->select_query_arr["select_clause"] = array();
+        $this->select_query_arr["from_clause"] = array();
+        $this->select_query_arr["where_clause"] = array();
+        $this->select_query_arr["group_by_clause"] = array();
+        $this->select_query_arr["having_clause"] = array();
+        $this->select_query_arr["order_by_clause"] = array();
+
+        $this->select_query_arr["raw_select_clause"] = array();
+        $this->select_query_arr["raw_from_clause"] = array();
+        $this->select_query_arr["raw_where_clause"] = array();
+        $this->select_query_arr["raw_group_by_clause"] = array();
+        $this->select_query_arr["raw_having_clause"] = array();
+        $this->select_query_arr["raw_order_by_clause"] = array();
+
+        $this->select_query_arr["nestWhere_expression"] = ""; # string only
+    }
 
     /**
      * Establishes a database connection based on the provided database name and an optional default configuration file path.
