@@ -196,6 +196,7 @@ class QueryBuilder
     {
         if ($isRaw) {
             $this->select_query_arr["raw_from_clause"][] = (string) $table;
+            $this->query .= "FROM {$table}";
         } else {
             $this->select_query_arr["from_clause"][] = (string) $table;
             $this->select_query_arr["from_clause"] = array_unique($this->select_query_arr["from_clause"]);
