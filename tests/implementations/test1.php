@@ -13,14 +13,20 @@ $db->connect([
 ]);
 
 run($db, function (QueryBuilder $db) {
-    $db->select('users');
+    $db->select()->from('users');
+    $db->get();
+    echo queryInfo($db->getLastQuery());
+});
+
+run($db, function (QueryBuilder $db) {
+    $db->select()->from('users');
     $db->where('age', '30.5 string');
     $db->get();
     echo queryInfo($db->getLastQuery());
 });
 
 run($db, function (QueryBuilder $db) {
-    $db->select('users');
+    $db->select(['name', 'age'])->from('users');
     $db->where('age', 30.5);
     // $db->orWhere('name', 'cant "go"');
     $result = $db->get();
@@ -29,8 +35,7 @@ run($db, function (QueryBuilder $db) {
 });
 
 run($db, function (QueryBuilder $db) {
-
-    $db->select('users');
+    $db->select('name, age')->from('users');
     $db->where('age', "30");
     // $db->orWhere('name', 'cant "go"');
     $result = $db->get();
@@ -42,7 +47,7 @@ run($db, function (QueryBuilder $db) {
     $name = <<<EOD
         Can't go
     EOD;
-    $db->select('users');
+    $db->select()->from('users');
     $db->where('name', $name);
     $result = $db->get();
     echo queryInfo($db->getLastQuery());
@@ -53,7 +58,7 @@ run($db, function (QueryBuilder $db) {
     $name = <<<EOD
         can't "go"
     EOD;
-    $db->select('users');
+    $db->select()->from('users');
     $db->where('name', $name);
     $result = $db->get();
     echo queryInfo($db->getLastQuery());
@@ -67,14 +72,13 @@ run($db, function (QueryBuilder $db) {
     echo queryInfo($db->getLastQuery());
 });
 
-run($db, function (QueryBuilder $db) {
-    $db->insert('users', [
-        'name' => 'test',
-        'age' => 56,
-    ]);
-    echo queryInfo($db->getLastQuery());
-});
-
+// run($db, function (QueryBuilder $db) {
+//     $db->insert('users', [
+//         'name' => 'test',
+//         'age' => 56,
+//     ]);
+//     echo queryInfo($db->getLastQuery());
+// });
 
 // $db->select('users');
 // $db->nestWhere("( 

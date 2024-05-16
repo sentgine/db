@@ -32,6 +32,9 @@ class QueryBuilder
     /** @var boolean nesting flag. */
     protected $is_where_nesting = false;
 
+    /** @var string The table name. */
+    protected string $table = "";
+
     /**
      * DatabaseConnection constructor.
      *
@@ -136,33 +139,52 @@ class QueryBuilder
     /**
      * Select columns from a table.
      * 
-     * @param string $table The table name.
      * @param mixed $columns (Optional) The columns to select. Defaults to '*'.
      * @return $this
      */
-    public function select(string $table, $columns = '*'): self
+    public function select(string|array $columns = '*'): self
     {
         if (is_array($columns)) {
             $this->select_query_arr["select_clause"] = $columns;
+            $this->query = "SELECT " . implode(', ', $this->select_query_arr["select_clause"]) . " ";
         } else {
             $this->select_query_arr["select_clause"][] = "*";
-            $this->query = "SELECT {$columns} FROM {$table}";
+            $this->query = "SELECT {$columns} ";
         }
-
-        $this->select_query_arr["raw_from_clause"][] = $table;
 
         return $this;
     }
 
     /**
-     * FROM clause.
-     * 
-     * @param string add syntax on FROM clause
-     * $return  VOID
+     * Add a table to the FROM clause of the query.
+     *
+     * @param string $input The table name to be added to the FROM clause.
+     * @param bool $isRaw Indicates if the input is a raw SQL expression.
+     * @return self Returns an instance of the current object.
      */
-    public function from(string $input)
+    public function from(string $input, bool $isRaw = false): self
     {
-        $this->select_query_arr["raw_from_clause"][] = (string)$input;
+        if ($isRaw) {
+            $this->select_query_arr["raw_from_clause"][] = (string) $input;
+        } else {
+            $this->select_query_arr["from_clause"][] = (string) $input;
+            $this->select_query_arr["from_clause"] = array_unique($this->select_query_arr["from_clause"]);
+            $this->query .= "FROM " . implode(',', $this->select_query_arr["from_clause"]) . " ";
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the table name.
+     * 
+     * @param string $name The name of the table.
+     * @return $this
+     */
+    public function table(string $name): self
+    {
+        $this->table = $name;
+        return $this;
     }
 
     /**
