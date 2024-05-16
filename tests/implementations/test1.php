@@ -13,7 +13,15 @@ $db->connect([
 ]);
 
 run($db, function (QueryBuilder $db) {
-    $db->select()->from('users');
+    $db->select()->from('users as t1');
+    $db->get();
+    echo queryInfo($db->getLastQuery());
+
+    $db->select(['name', 'age'])->from('`users`');
+    $db->get();
+    echo queryInfo($db->getLastQuery());
+
+    $db->select(['name', 'age'])->from('`users` as t1');
     $db->get();
     echo queryInfo($db->getLastQuery());
 });

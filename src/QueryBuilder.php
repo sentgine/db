@@ -61,15 +61,16 @@ class QueryBuilder
 
         $this->select_query_arr["nestWhere_expression"] = ""; # string only
     }
-    
-    public function purge(){
+
+    public function purge()
+    {
         $this->query = "";
         $this->parameters = [];
         $this->last_query = "";
         $this->select_query_arr = [];
         $this->is_where_nesting = false;
         $this->table = "";
-        
+
         $this->select_query_arr["select_clause"] = array();
         $this->select_query_arr["from_clause"] = array();
         $this->select_query_arr["where_clause"] = array();
@@ -169,6 +170,10 @@ class QueryBuilder
      */
     public function select(string|array $columns = '*', bool $isRaw = false): self
     {
+        // Make sure the from clauses are empty when running a new select
+        $this->select_query_arr["raw_from_clause"] = [];
+        $this->select_query_arr["from_clause"] = [];
+
         if ($isRaw) {
             $this->select_query_arr["raw_select_clause"][] = (string) $columns;
             $this->query = "SELECT {$columns} ";
@@ -184,6 +189,7 @@ class QueryBuilder
 
         return $this;
     }
+
 
     /**
      * Add a table to the FROM clause of the query.
