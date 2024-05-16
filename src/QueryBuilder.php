@@ -62,7 +62,12 @@ class QueryBuilder
         $this->select_query_arr["nestWhere_expression"] = ""; # string only
     }
 
-    public function purge()
+    /**
+     * Resets the query builder to its initial state, clearing all query parts.
+     *
+     * @return $this
+     */
+    public function purge(): void
     {
         $this->query = "";
         $this->parameters = [];
@@ -71,21 +76,21 @@ class QueryBuilder
         $this->is_where_nesting = false;
         $this->table = "";
 
-        $this->select_query_arr["select_clause"] = array();
-        $this->select_query_arr["from_clause"] = array();
-        $this->select_query_arr["where_clause"] = array();
-        $this->select_query_arr["group_by_clause"] = array();
-        $this->select_query_arr["having_clause"] = array();
-        $this->select_query_arr["order_by_clause"] = array();
+        $this->select_query_arr["select_clause"] = [];
+        $this->select_query_arr["from_clause"] = [];
+        $this->select_query_arr["where_clause"] = [];
+        $this->select_query_arr["group_by_clause"] = [];
+        $this->select_query_arr["having_clause"] = [];
+        $this->select_query_arr["order_by_clause"] = [];
 
-        $this->select_query_arr["raw_select_clause"] = array();
-        $this->select_query_arr["raw_from_clause"] = array();
-        $this->select_query_arr["raw_where_clause"] = array();
-        $this->select_query_arr["raw_group_by_clause"] = array();
-        $this->select_query_arr["raw_having_clause"] = array();
-        $this->select_query_arr["raw_order_by_clause"] = array();
+        $this->select_query_arr["raw_select_clause"] = [];
+        $this->select_query_arr["raw_from_clause"] = [];
+        $this->select_query_arr["raw_where_clause"] = [];
+        $this->select_query_arr["raw_group_by_clause"] = [];
+        $this->select_query_arr["raw_having_clause"] = [];
+        $this->select_query_arr["raw_order_by_clause"] = [];
 
-        $this->select_query_arr["nestWhere_expression"] = ""; # string only
+        $this->select_query_arr["nestWhere_expression"] = ""; // string only
     }
 
     /**
