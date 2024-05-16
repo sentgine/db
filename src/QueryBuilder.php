@@ -190,7 +190,6 @@ class QueryBuilder
         return $this;
     }
 
-
     /**
      * Add a table to the FROM clause of the query.
      *
