@@ -142,20 +142,20 @@ class QueryBuilder
      * @param mixed $input (Optional) The columns to select. Defaults to '*'.
      * @return $this
      */
-    public function select(string|array $input = '*', bool $isRaw = false): self {
+    public function select(string|array $columns = '*', bool $isRaw = false): self
+    {
         if ($isRaw) {
-            $this->select_query_arr["raw_select_clause"][] = (string) $input;
-            $this->query = "SELECT {$input} ";
+            $this->select_query_arr["raw_select_clause"][] = (string) $columns;
+            $this->query = "SELECT {$columns} ";
         } else {
-            if (is_array($input)) {
-                $this->select_query_arr["select_clause"] = $input;
+            if (is_array($columns)) {
+                $this->select_query_arr["select_clause"] = $columns;
                 $this->query = "SELECT " . implode(', ', $this->select_query_arr["select_clause"]) . " ";
             } else {
                 $this->select_query_arr["select_clause"][] = "*";
-                $this->query = "SELECT {$input} ";
+                $this->query = "SELECT {$columns} ";
             }
         }
-
 
         return $this;
     }
@@ -167,11 +167,12 @@ class QueryBuilder
      * @param bool $isRaw Indicates if the input is a raw SQL expression.
      * @return self Returns an instance of the current object.
      */
-    public function from(string $input, bool $isRaw = false): self {
+    public function from(string $table, bool $isRaw = false): self
+    {
         if ($isRaw) {
-            $this->select_query_arr["raw_from_clause"][] = (string) $input;
+            $this->select_query_arr["raw_from_clause"][] = (string) $table;
         } else {
-            $this->select_query_arr["from_clause"][] = (string) $input;
+            $this->select_query_arr["from_clause"][] = (string) $table;
             $this->select_query_arr["from_clause"] = array_unique($this->select_query_arr["from_clause"]);
             $this->query .= "FROM " . implode(',', $this->select_query_arr["from_clause"]) . " ";
         }
@@ -185,7 +186,7 @@ class QueryBuilder
      * @param string $name The name of the table.
      * @return $this
      */
-    public function table(string $input , bool $isRaw = false): self
+    public function table(string $name, bool $isRaw = false): self
     {
         $this->table = $name;
         return $this;
