@@ -139,18 +139,23 @@ class QueryBuilder
     /**
      * Select columns from a table.
      * 
-     * @param mixed $columns (Optional) The columns to select. Defaults to '*'.
+     * @param mixed $input (Optional) The columns to select. Defaults to '*'.
      * @return $this
      */
-    public function select(string|array $columns = '*'): self
-    {
-        if (is_array($columns)) {
-            $this->select_query_arr["select_clause"] = $columns;
-            $this->query = "SELECT " . implode(', ', $this->select_query_arr["select_clause"]) . " ";
+    public function select(string|array $input = '*', bool $isRaw = false): self {
+        if ($isRaw) {
+            $this->select_query_arr["raw_select_clause"][] = (string) $input;
+            $this->query = "SELECT {$input} ";
         } else {
-            $this->select_query_arr["select_clause"][] = "*";
-            $this->query = "SELECT {$columns} ";
+            if (is_array($input)) {
+                $this->select_query_arr["select_clause"] = $input;
+                $this->query = "SELECT " . implode(', ', $this->select_query_arr["select_clause"]) . " ";
+            } else {
+                $this->select_query_arr["select_clause"][] = "*";
+                $this->query = "SELECT {$input} ";
+            }
         }
+
 
         return $this;
     }
@@ -162,8 +167,7 @@ class QueryBuilder
      * @param bool $isRaw Indicates if the input is a raw SQL expression.
      * @return self Returns an instance of the current object.
      */
-    public function from(string $input, bool $isRaw = false): self
-    {
+    public function from(string $input, bool $isRaw = false): self {
         if ($isRaw) {
             $this->select_query_arr["raw_from_clause"][] = (string) $input;
         } else {
@@ -181,7 +185,7 @@ class QueryBuilder
      * @param string $name The name of the table.
      * @return $this
      */
-    public function table(string $name): self
+    public function table(string $input , bool $isRaw = false): self
     {
         $this->table = $name;
         return $this;
